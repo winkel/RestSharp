@@ -78,7 +78,7 @@ namespace RestSharp.Deserializers
 				if (value == null) continue;
 
 				// check for nullable and extract underlying type
-				if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+				if (type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(Nullable<>))
 				{
 					type = type.GetGenericArguments()[0];
 				}
@@ -104,14 +104,14 @@ namespace RestSharp.Deserializers
 		private IList BuildList(Type type, object parent)
 		{
 			var list = (IList)Activator.CreateInstance(type);
-			var listType = type.GetInterfaces().First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IList<>));
+			var listType = type.GetInterfaces().First(x => x.IsGenericType() && x.GetGenericTypeDefinition() == typeof(IList<>));
 			var itemType = listType.GetGenericArguments()[0];
 
 			if (parent is IList)
 			{
 				foreach (var element in (IList)parent)
 				{
-					if (itemType.IsPrimitive)
+					if (itemType.IsPrimitive())
 					{
 						var value = element.ToString();
 						list.Add(value.ChangeType(itemType, Culture));
@@ -150,7 +150,7 @@ namespace RestSharp.Deserializers
 		{
 			var stringValue = Convert.ToString(value, Culture);
 
-			if (type.IsPrimitive)
+			if (type.IsPrimitive())
 			{
 				// no primitives can contain quotes so we can safely remove them
 				// allows converting a json value like {"index": "1"} to an int
@@ -158,7 +158,7 @@ namespace RestSharp.Deserializers
 
 				return tmpVal.ChangeType(type, Culture);
 			}
-			else if (type.IsEnum)
+			else if (type.IsEnum())
 			{
 				return type.FindEnumValue(stringValue, Culture);
 			}
@@ -204,7 +204,7 @@ namespace RestSharp.Deserializers
 			{
 				return TimeSpan.Parse(stringValue);
 			}
-			else if (type.IsGenericType)
+			else if (type.IsGenericType())
 			{
 				var genericTypeDef = type.GetGenericTypeDefinition();
 				if (genericTypeDef == typeof(List<>))

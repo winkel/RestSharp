@@ -116,6 +116,9 @@ namespace RestSharp
 		/// <returns>This request</returns>
 		public IRestRequest AddFile (string name, string path)
 		{
+#if NETFX_CORE
+            throw new NotImplementedException();
+#else
 			return AddFile(new FileParameter
 			{
 				Name = name,
@@ -128,7 +131,8 @@ namespace RestSharp
 					}
 				}
 			});
-		}
+#endif
+        }
 
 		/// <summary>
 		/// Adds the bytes to the Files collection with the specified file name
