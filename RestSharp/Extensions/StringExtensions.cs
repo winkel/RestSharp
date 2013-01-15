@@ -242,8 +242,12 @@ namespace RestSharp.Extensions
 						if (restOfWord.IsUpperCase())
 							restOfWord = restOfWord.ToLower(culture);
 
-						char firstChar = CharExtensions.ToUpper(word[0], culture);
-						words[i] = String.Concat(firstChar, restOfWord);
+#if !NETFX_CORE
+                        char firstChar = char.ToUpper(word[0], culture);
+#else
+                        char firstChar = CharExtensions.ToUpper(word[0], culture);
+#endif
+                        words[i] = String.Concat(firstChar, restOfWord);
 					}
 				}
 				return String.Join(joinString, words);

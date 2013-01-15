@@ -31,7 +31,14 @@ namespace RestSharp
 	/// </summary>
 	public partial class RestClient : IRestClient
 	{
-		public IHttpFactory HttpFactory = new SimpleFactory<Http>();
+        // silverlight friendly way to get current version
+#if !NETFX_CORE
+        static readonly Version version = new AssemblyName(Assembly.GetExecutingAssembly().FullName).Version;
+#else
+        static readonly Version version = new AssemblyName(typeof(RestClient).FullName).Version;
+#endif
+
+        public IHttpFactory HttpFactory = new SimpleFactory<Http>();
 
 		/// <summary>
 		/// Default constructor that registers default content handlers
@@ -293,7 +300,7 @@ namespace RestSharp
 			http.Url = BuildUri(request);
 
 			var userAgent = UserAgent ?? http.UserAgent;
-            http.UserAgent = userAgent.HasValue() ? userAgent : "RestSharp " + AssemblyExtensions.GetVersion();
+            http.UserAgent = userAgent.HasValue() ? userAgent : "RestSharp " + version.ToString();
 
 			var timeout = request.Timeout > 0 ? request.Timeout : Timeout;
 			if (timeout > 0)

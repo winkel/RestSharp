@@ -78,12 +78,20 @@ namespace RestSharp.Extensions
 		/// <returns></returns>
 		public static bool IsSubclassOfRawGeneric(this Type toCheck, Type generic) {
 			while (toCheck != typeof(object)) {
+#if !NETFX_CORE
+				var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+#else
 				var cur = toCheck.IsGenericType() ? toCheck.GetGenericTypeDefinition() : toCheck;
-				if (generic == cur) {
+#endif
+                if (generic == cur) {
 					return true;
 				}
+#if !NETFX_CORE
+				toCheck = toCheck.BaseType;
+#else
 				toCheck = toCheck.BaseType();
-			}
+#endif
+            }
 			return false;
 		}
 

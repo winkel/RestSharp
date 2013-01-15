@@ -15,22 +15,6 @@ namespace RestSharp.Extensions
         }
     }
 
-    internal static class AssemblyExtensions
-    {
-        public static string GetVersion()
-        {
-            var asmName = typeof(AssemblyExtensions).AssemblyQualifiedName;
-            var versionExpression = new System.Text.RegularExpressions.Regex("Version=(?<version>[0-9.]*)");
-            var m = versionExpression.Match(asmName);
-            if (m.Success)
-            {
-                return "WinRT " + m.Groups["version"].Value;
-            }
-
-            return null;
-        }
-    }
-
     internal static class TypeExtensions
     {
         public static IEnumerable<PropertyInfo> GetProperties(this Type type)

@@ -78,7 +78,11 @@ namespace RestSharp.Deserializers
 				if (value == null) continue;
 
 				// check for nullable and extract underlying type
+#if !NETFX_CORE
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+#else
 				if (type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+#endif
 				{
 					type = type.GetGenericArguments()[0];
 				}
@@ -104,15 +108,23 @@ namespace RestSharp.Deserializers
 		private IList BuildList(Type type, object parent)
 		{
 			var list = (IList)Activator.CreateInstance(type);
+#if !NETFX_CORE
+			var listType = type.GetInterfaces().First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IList<>));
+#else
 			var listType = type.GetInterfaces().First(x => x.IsGenericType() && x.GetGenericTypeDefinition() == typeof(IList<>));
-			var itemType = listType.GetGenericArguments()[0];
+#endif
+            var itemType = listType.GetGenericArguments()[0];
 
 			if (parent is IList)
 			{
 				foreach (var element in (IList)parent)
 				{
+#if !NETFX_CORE
+					if (itemType.IsPrimitive)
+#else
 					if (itemType.IsPrimitive())
-					{
+#endif
+                    {
 						var value = element.ToString();
 						list.Add(value.ChangeType(itemType, Culture));
 					}
@@ -150,7 +162,11 @@ namespace RestSharp.Deserializers
 		{
 			var stringValue = Convert.ToString(value, Culture);
 
+#if !NETFX_CORE
+			if (type.IsPrimitive)
+#else
 			if (type.IsPrimitive())
+#endif
 			{
 				// no primitives can contain quotes so we can safely remove them
 				// allows converting a json value like {"index": "1"} to an int
@@ -158,8 +174,12 @@ namespace RestSharp.Deserializers
 
 				return tmpVal.ChangeType(type, Culture);
 			}
+#if !NETFX_CORE
+			else if (type.IsEnum)
+#else
 			else if (type.IsEnum())
-			{
+#endif
+            {
 				return type.FindEnumValue(stringValue, Culture);
 			}
 			else if (type == typeof(Uri))
@@ -204,8 +224,12 @@ namespace RestSharp.Deserializers
 			{
 				return TimeSpan.Parse(stringValue);
 			}
+#if !NETFX_CORE
+			else if (type.IsGenericType)
+#else
 			else if (type.IsGenericType())
-			{
+#endif
+            {
 				var genericTypeDef = type.GetGenericTypeDefinition();
 				if (genericTypeDef == typeof(List<>))
 				{
