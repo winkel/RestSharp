@@ -34,8 +34,6 @@ namespace RestSharp
         // silverlight friendly way to get current version
 #if !NETFX_CORE
         static readonly Version version = new AssemblyName(Assembly.GetExecutingAssembly().FullName).Version;
-#else
-        static readonly Version version = new AssemblyName(typeof(RestClient).FullName).Version;
 #endif
 
         public IHttpFactory HttpFactory = new SimpleFactory<Http>();
@@ -300,7 +298,11 @@ namespace RestSharp
 			http.Url = BuildUri(request);
 
 			var userAgent = UserAgent ?? http.UserAgent;
+#if !NETFX_CORE
             http.UserAgent = userAgent.HasValue() ? userAgent : "RestSharp " + version.ToString();
+#else
+            http.UserAgent = userAgent.HasValue() ? userAgent : "RestSharp WinRT";
+#endif
 
 			var timeout = request.Timeout > 0 ? request.Timeout : Timeout;
 			if (timeout > 0)
