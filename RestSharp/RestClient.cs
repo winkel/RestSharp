@@ -31,9 +31,6 @@ namespace RestSharp
 	/// </summary>
 	public partial class RestClient : IRestClient
 	{
-		// silverlight friendly way to get current version
-		static readonly Version version = new AssemblyName(Assembly.GetExecutingAssembly().FullName).Version;
-
 		public IHttpFactory HttpFactory = new SimpleFactory<Http>();
 
 		/// <summary>
@@ -296,7 +293,7 @@ namespace RestSharp
 			http.Url = BuildUri(request);
 
 			var userAgent = UserAgent ?? http.UserAgent;
-			http.UserAgent = userAgent.HasValue() ? userAgent : "RestSharp " + version.ToString();
+            http.UserAgent = userAgent.HasValue() ? userAgent : "RestSharp " + AssemblyExtensions.GetVersion();
 
 			var timeout = request.Timeout > 0 ? request.Timeout : Timeout;
 			if (timeout > 0)
@@ -435,8 +432,18 @@ namespace RestSharp
 			try
 			{
 			    response = raw.toAsyncResponse<T>();
-				response.Data = handler.Deserialize<T>(raw);
-				response.Request = request;
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    response.Data = handler.Deserialize<T>(raw);
+                }
+                else
+                {
+                    response.ResponseStatus = ResponseStatus.Error;
+                    response.ErrorMessage = response.StatusDescription;
+                }
+
+                response.Request = request;
 			}
 			catch (Exception ex)
 			{
