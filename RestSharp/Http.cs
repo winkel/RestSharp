@@ -20,7 +20,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+#if !NETFX_CORE
 using System.Security.Cryptography.X509Certificates;
+#endif
 using RestSharp.Extensions;
 
 #if WINDOWS_PHONE

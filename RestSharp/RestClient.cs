@@ -19,7 +19,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+#if !NETFX_CORE
 using System.Security.Cryptography.X509Certificates;
+#endif
 using System.Text;
 using RestSharp.Deserializers;
 using RestSharp.Extensions;

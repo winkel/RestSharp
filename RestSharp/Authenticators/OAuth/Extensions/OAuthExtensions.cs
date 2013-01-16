@@ -1,5 +1,7 @@
 using System;
+#if !NETFX_CORE
 using System.Security.Cryptography;
+#endif
 using System.Text;
 
 namespace RestSharp.Authenticators.OAuth.Extensions

@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+#if !NETFX_CORE
 using System.Security.Cryptography;
+#endif
 using System.Text;
 using RestSharp.Authenticators.OAuth.Extensions;
 
