@@ -26,11 +26,13 @@ namespace RestSharp.Authenticators.OAuth.Extensions
 			}
 		}
 
+#if !NETFX_CORE
 		public static string HashWith(this string input, HashAlgorithm algorithm)
 		{
 			var data = Encoding.UTF8.GetBytes(input);
 			var hash = algorithm.ComputeHash(data);
 			return Convert.ToBase64String(hash);
 		}
+#endif
 	}
 }

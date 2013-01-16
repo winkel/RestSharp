@@ -102,8 +102,74 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\RestSharp\Authenticators\HttpBasicAuthenticator.cs">
+      <Link>Authentications\HttpBasicAuthenticator.cs</Link>
+    </Compile>
     <Compile Include="..\RestSharp\Authenticators\IAuthenticator.cs">
       <Link>Authentications\IAuthenticator.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\NtlmAuthenticator.cs">
+      <Link>Authentications\NtlmAuthenticator.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth1Authenticator.cs">
+      <Link>Authentications\OAuth1Authenticator.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth2Authenticator.cs">
+      <Link>Authentications\OAuth2Authenticator.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\Extensions\CollectionExtensions.cs">
+      <Link>Authentications\OAuth\Extensions\CollectionExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\Extensions\OAuthExtensions.cs">
+      <Link>Authentications\OAuth\Extensions\OAuthExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\Extensions\StringExtensions.cs">
+      <Link>Authentications\OAuth\Extensions\StringExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\Extensions\TimeExtensions.cs">
+      <Link>Authentications\OAuth\Extensions\TimeExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\HttpPostParameter.cs">
+      <Link>Authentications\OAuth\HttpPostParameter.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\HttpPostParameterType.cs">
+      <Link>Authentications\OAuth\HttpPostParameterType.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\OAuthParameterHandling.cs">
+      <Link>Authentications\OAuth\OAuthParameterHandling.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\OAuthSignatureMethod.cs">
+      <Link>Authentications\OAuth\OAuthSignatureMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\OAuthSignatureTreatment.cs">
+      <Link>Authentications\OAuth\OAuthSignatureTreatment.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\OAuthTools.cs">
+      <Link>Authentications\OAuth\OAuthTools.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\OAuthType.cs">
+      <Link>Authentications\OAuth\OAuthType.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\OAuthWebQueryInfo.cs">
+      <Link>Authentications\OAuth\OAuthWebQueryInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\OAuthWorkflow.cs">
+      <Link>Authentications\OAuth\OAuthWorkflow.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\WebPair.cs">
+      <Link>Authentications\OAuth\WebPair.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\WebPairCollection.cs">
+      <Link>Authentications\OAuth\WebPairCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\WebParameter.cs">
+      <Link>Authentications\OAuth\WebParameter.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\OAuth\WebParameterCollection.cs">
+      <Link>Authentications\OAuth\WebParameterCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\RestSharp\Authenticators\SimpleAuthenticator.cs">
+      <Link>Authentications\SimpleAuthenticator.cs</Link>
     </Compile>
     <Compile Include="..\RestSharp\Deserializers\IDeserializer.cs">
       <Link>Deserializers\IDeserializer.cs</Link>

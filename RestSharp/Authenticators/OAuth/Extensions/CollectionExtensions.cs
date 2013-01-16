@@ -49,7 +49,7 @@ namespace RestSharp.Authenticators.OAuth.Extensions
 			}
 		}
 
-#if !WINDOWS_PHONE && !SILVERLIGHT
+#if !WINDOWS_PHONE && !SILVERLIGHT && !NETFX_CORE
 
 		public static void AddRange(this IDictionary<string, string> collection, NameValueCollection range)
 		{
@@ -84,7 +84,7 @@ namespace RestSharp.Authenticators.OAuth.Extensions
 
 #endif
 
-		public static string Concatenate(this WebParameterCollection collection, string separator, string spacer)
+        public static string Concatenate(this WebParameterCollection collection, string separator, string spacer)
 		{
 			var sb = new StringBuilder();
 

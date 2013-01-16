@@ -30,7 +30,7 @@ namespace RestSharp.Authenticators.OAuth
 			_parameters = new List<WebPair>(parameters);
 		}
 
-#if !WINDOWS_PHONE && !SILVERLIGHT
+#if !WINDOWS_PHONE && !SILVERLIGHT && !NETFX_CORE
 		public WebPairCollection(NameValueCollection collection) : this()
 		{
 			AddCollection(collection);
@@ -51,7 +51,7 @@ namespace RestSharp.Authenticators.OAuth
 		}
 #endif
 
-		public WebPairCollection(IDictionary<string, string> collection) : this()
+        public WebPairCollection(IDictionary<string, string> collection) : this()
 		{
 			AddCollection(collection);
 		}
