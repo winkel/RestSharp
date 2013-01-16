@@ -442,7 +442,7 @@ namespace RestSharp
 			{
 			    response = raw.toAsyncResponse<T>();
 
-                if (response.StatusCode == HttpStatusCode.OK)
+                if (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Created)
                 {
                     response.Data = handler.Deserialize<T>(raw);
                 }
