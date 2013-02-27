@@ -143,7 +143,6 @@ namespace RestSharp.Extensions
 			var formats = new[] {
 				"u", 
 				"s", 
-				"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'", 
 				"yyyy-MM-ddTHH:mm:ssZ", 
 				"yyyy-MM-dd HH:mm:ssZ", 
 				"yyyy-MM-ddTHH:mm:ss", 
@@ -152,7 +151,7 @@ namespace RestSharp.Extensions
 			};
 
 			DateTime date;
-			if (DateTime.TryParseExact(input, formats, culture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out date))
+			if (DateTime.TryParseExact(input, formats, culture, DateTimeStyles.None, out date))
 			{
 				return date;
 			}
