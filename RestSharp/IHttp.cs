@@ -16,8 +16,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.IO;
+using System.Net;
 #if !NETFX_CORE
 using System.Security.Cryptography.X509Certificates;
 #endif
@@ -26,6 +26,7 @@ namespace RestSharp
 {
 	public interface IHttp
 	{
+		Action<Stream> ResponseWriter { get; set; }
 		CookieContainer CookieContainer { get; set; }
 		ICredentials Credentials { get; set; }
 		string UserAgent { get; set; }
@@ -44,6 +45,11 @@ namespace RestSharp
 		IList<HttpCookie> Cookies { get; }
 		string RequestBody { get; set; }
 		string RequestContentType { get; set; }
+
+		/// <summary>
+		/// An alternative to RequestBody, for when the caller already has the byte array.
+		/// </summary>
+		byte[] RequestBodyBytes { get; set; }
 
 		Uri Url { get; set; }
 
@@ -64,9 +70,9 @@ namespace RestSharp
 		HttpResponse Options();
 		HttpResponse Post();
 		HttpResponse Put();
-        HttpResponse Patch();
-        HttpResponse AsPost(string httpMethod);
-        HttpResponse AsGet(string httpMethod);
+		HttpResponse Patch();
+		HttpResponse AsPost(string httpMethod);
+		HttpResponse AsGet(string httpMethod);
 
 		IWebProxy Proxy { get; set; }
 #endif
