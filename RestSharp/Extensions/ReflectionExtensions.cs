@@ -26,6 +26,7 @@ namespace RestSharp.Extensions
 	/// </summary>
 	public static class ReflectionExtensions
 	{
+#if !NETFX_CORE
 		/// <summary>
 		/// Retrieve an attribute from a member (property)
 		/// </summary>
@@ -45,8 +46,31 @@ namespace RestSharp.Extensions
 		public static T GetAttribute<T>(this Type type) where T : Attribute {
 			return Attribute.GetCustomAttribute(type, typeof(T)) as T;
 		}
+#else
+        /// <summary>
+        /// Retrieve an attribute from a member (property)
+        /// </summary>
+        /// <typeparam name="T">Type of attribute to retrieve</typeparam>
+        /// <param name="prop">Member to retrieve attribute from</param>
+        /// <returns></returns>
+        public static T GetAttribute<T>(this MemberInfo prop) where T : Attribute
+        {
+            return prop.GetCustomAttribute<T>();
+        }
 
-		/// <summary>
+        /// <summary>
+        /// Retrieve an attribute from a type
+        /// </summary>
+        /// <typeparam name="T">Type of attribute to retrieve</typeparam>
+        /// <param name="type">Type to retrieve attribute from</param>
+        /// <returns></returns>
+        public static T GetAttribute<T>(this Type type) where T : Attribute
+        {
+            return type.GetTypeInfo().GetCustomAttribute<T>();
+        }
+#endif
+
+        /// <summary>
 		/// Checks a type to see if it derives from a raw generic (e.g. List[[]])
 		/// </summary>
 		/// <param name="toCheck"></param>
@@ -54,12 +78,20 @@ namespace RestSharp.Extensions
 		/// <returns></returns>
 		public static bool IsSubclassOfRawGeneric(this Type toCheck, Type generic) {
 			while (toCheck != typeof(object)) {
+#if !NETFX_CORE
 				var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
-				if (generic == cur) {
+#else
+				var cur = toCheck.IsGenericType() ? toCheck.GetGenericTypeDefinition() : toCheck;
+#endif
+                if (generic == cur) {
 					return true;
 				}
+#if !NETFX_CORE
 				toCheck = toCheck.BaseType;
-			}
+#else
+				toCheck = toCheck.BaseType();
+#endif
+            }
 			return false;
 		}
 

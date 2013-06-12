@@ -121,6 +121,9 @@ namespace RestSharp
 		/// <returns>This request</returns>
 		public IRestRequest AddFile (string name, string path)
 		{
+#if NETFX_CORE
+            throw new NotImplementedException();
+#else
 			return AddFile(new FileParameter
 			{
 				Name = name,
@@ -133,7 +136,8 @@ namespace RestSharp
 					}
 				}
 			});
-		}
+#endif
+        }
 
 		/// <summary>
 		/// Adds the bytes to the Files collection with the specified file name
@@ -266,9 +270,12 @@ namespace RestSharp
 						if (propType.IsArray)
 						{
 							var elementType = propType.GetElementType();
-
+#if !NETFX_CORE
 							if (((Array)val).Length > 0 && (elementType.IsPrimitive || elementType.IsValueType || elementType == typeof(string))) {
-								// convert the array to an array of strings
+#else
+							if (((Array)val).Length > 0 && (elementType.IsPrimitive() || elementType.IsValueType() || elementType == typeof(string))) {
+#endif
+                                // convert the array to an array of strings
 								var values = (from object item in ((Array)val) select item.ToString()).ToArray<string>();
 								val = string.Join(",", values);
 							} else {

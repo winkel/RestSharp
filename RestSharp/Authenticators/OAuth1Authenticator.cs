@@ -4,7 +4,7 @@ using System.Text;
 using RestSharp.Authenticators.OAuth;
 using RestSharp.Authenticators.OAuth.Extensions;
 
-#if WINDOWS_PHONE
+#if WINDOWS_PHONE || NETFX_CORE
 using System.Net;
 #elif SILVERLIGHT
 using System.Windows.Browser;

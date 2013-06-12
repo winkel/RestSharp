@@ -1,15 +1,17 @@
 using System;
 using System.Linq;
+#if !NETFX_CORE
 using System.Security.Cryptography;
+#endif
 using System.Text;
 using RestSharp.Authenticators.OAuth.Extensions;
 
 namespace RestSharp.Authenticators.OAuth
 {
-#if !SILVERLIGHT && !WINDOWS_PHONE
+#if !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE
 	[Serializable]
 #endif
-	internal static class OAuthTools
+    internal static class OAuthTools
 	{
 		private const string AlphaNumeric = Upper + Lower + Digit;
 		private const string Digit = "1234567890";
@@ -20,18 +22,18 @@ namespace RestSharp.Authenticators.OAuth
 		private static readonly Random _random;
 		private static readonly object _randomLock = new object();
 
-#if !SILVERLIGHT && !WINDOWS_PHONE
+#if !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE
 		private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
 #endif
 
-		static OAuthTools()
-		{
-#if !SILVERLIGHT && !WINDOWS_PHONE
+        static OAuthTools()
+        {
+#if !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE
 			var bytes = new byte[4];
 			_rng.GetNonZeroBytes(bytes);
 			_random = new Random(BitConverter.ToInt32(bytes, 0));
 #else
-			_random = new Random();
+            _random = new Random();
 #endif
 		}
 
@@ -135,9 +137,17 @@ namespace RestSharp.Authenticators.OAuth
 		public static string UrlEncodeStrict(string value)
 		{
 			// [JD]: We need to escape the apostrophe as well or the signature will fail
+#if !NETFX_CORE
 			var original = value;
+#else
+            var original = value.ToCharArray();
+#endif
 			var ret = original.Where(
+#if !NETFX_CORE
 				c => !Unreserved.Contains(c) && c != '%').Aggregate(
+#else
+                c => !Unreserved.Contains(c.ToString()) && c != '%').Aggregate(
+#endif
 					value, (current, c) => current.Replace(
 						c.ToString(), c.ToString().PercentEncode()
 				));
@@ -305,16 +315,32 @@ namespace RestSharp.Authenticators.OAuth
 			string signature;
 			switch (signatureMethod)
 			{
-				case OAuthSignatureMethod.HmacSha1:
-				{
+                case OAuthSignatureMethod.HmacSha1:
+                {
+#if !NETFX_CORE
 					var crypto = new HMACSHA1();
 					var key = "{0}&{1}".FormatWith(consumerSecret, tokenSecret);
 
 					crypto.Key = _encoding.GetBytes(key);
 					signature = signatureBase.HashWith(crypto);
+#else
+                    var crypt = Windows.Security.Cryptography.Core.MacAlgorithmProvider.OpenAlgorithm(Windows.Security.Cryptography.Core.MacAlgorithmNames.HmacSha1); 
+                    var key = "{0}&{1}".FormatWith(consumerSecret, tokenSecret);
 
-					break;
-				}
+                    var keyBuffer = Windows.Security.Cryptography.CryptographicBuffer.ConvertStringToBinary(key, Windows.Security.Cryptography.BinaryStringEncoding.Utf8);
+                    var cryptKey = crypt.CreateKey(keyBuffer);
+
+                    var signatureBuffer = Windows.Security.Cryptography.Core.CryptographicEngine.Sign(
+                                                cryptKey,
+                                                Windows.Security.Cryptography.CryptographicBuffer.ConvertStringToBinary(
+                                                    signatureBase, Windows.Security.Cryptography.BinaryStringEncoding.Utf8
+                                                )
+                                            );
+
+                    signature = Windows.Security.Cryptography.CryptographicBuffer.EncodeToBase64String(signatureBuffer);
+#endif
+                    break;
+                }
 				case OAuthSignatureMethod.PlainText:
 				{
 				    signature = "{0}&{1}".FormatWith(consumerSecret, tokenSecret);

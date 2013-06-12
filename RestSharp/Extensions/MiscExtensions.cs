@@ -24,8 +24,8 @@ namespace RestSharp.Extensions
 	/// Extension method overload!
 	/// </summary>
 	public static class MiscExtensions
-	{
-#if !WINDOWS_PHONE
+    {
+#if !WINDOWS_PHONE && !NETFX_CORE
 		/// <summary>
 		/// Save a byte array to a file
 		/// </summary>
@@ -37,7 +37,7 @@ namespace RestSharp.Extensions
 		}
 #endif
 
-		/// <summary>
+        /// <summary>
 		/// Read a stream into a byte array
 		/// </summary>
 		/// <param name="input">Stream to read</param>

@@ -19,7 +19,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+#if !NETFX_CORE
 using System.Security.Cryptography.X509Certificates;
+#endif
 using System.Text;
 using RestSharp.Deserializers;
 using RestSharp.Extensions;
@@ -31,10 +33,12 @@ namespace RestSharp
 	/// </summary>
 	public partial class RestClient : IRestClient
 	{
-		// silverlight friendly way to get current version
-		static readonly Version version = new AssemblyName(Assembly.GetExecutingAssembly().FullName).Version;
+        // silverlight friendly way to get current version
+#if !NETFX_CORE
+        static readonly Version version = new AssemblyName(Assembly.GetExecutingAssembly().FullName).Version;
+#endif
 
-		public IHttpFactory HttpFactory = new SimpleFactory<Http>();
+        public IHttpFactory HttpFactory = new SimpleFactory<Http>();
 
 		/// <summary>
 		/// Default constructor that registers default content handlers
@@ -317,7 +321,11 @@ namespace RestSharp
 			http.Url = BuildUri(request);
 
 			var userAgent = UserAgent ?? http.UserAgent;
-			http.UserAgent = userAgent.HasValue() ? userAgent : "RestSharp " + version.ToString();
+#if !NETFX_CORE
+            http.UserAgent = userAgent.HasValue() ? userAgent : "RestSharp " + version.ToString();
+#else
+            http.UserAgent = userAgent.HasValue() ? userAgent : "RestSharp WinRT";
+#endif
 
 			var timeout = request.Timeout > 0 ? request.Timeout : Timeout;
 			if (timeout > 0)
@@ -473,8 +481,18 @@ namespace RestSharp
 			try
 			{
 			    response = raw.toAsyncResponse<T>();
-				response.Data = handler.Deserialize<T>(raw);
-				response.Request = request;
+
+                if (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Created)
+                {
+                    response.Data = handler.Deserialize<T>(raw);
+                }
+                else
+                {
+                    response.ResponseStatus = ResponseStatus.Error;
+                    response.ErrorMessage = response.StatusDescription;
+                }
+
+                response.Request = request;
 			}
 			catch (Exception ex)
 			{

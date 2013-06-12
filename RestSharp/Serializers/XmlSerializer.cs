@@ -135,7 +135,11 @@ namespace RestSharp.Serializers
 				var nsName = name.AsNamespaced(Namespace);
 				var element = new XElement(nsName);
 
-				if (propType.IsPrimitive || propType.IsValueType || propType == typeof(string)) {
+#if !NETFX_CORE
+                if (propType.IsPrimitive || propType.IsValueType || propType == typeof(string)) {
+#else
+				if (propType.IsPrimitive() || propType.IsValueType() || propType == typeof(string)) {
+#endif
 					if (useAttribute) {
 						root.Add(new XAttribute(name, value));
 						continue;
